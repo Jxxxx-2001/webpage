@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>量子计算与信息处理实验室</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.8/dist/chart.umd.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind 配置 -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#165DFF',
+                        secondary: '#36CBCB',
+                        accent: '#7B61FF',
+                        dark: '#1D2939',
+                        light: '#F9FAFB'
+                    },
+                    fontFamily: {
+                        inter: ['Inter', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .content-auto {
+                content-visibility: auto;
+            }
+            .text-shadow {
+                text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            }
+            .text-gradient {
+                background-clip: text;
+                -webkit-background-clip: text;
+                color: transparent;
+            }
+            .bg-glass {
+                backdrop-filter: blur(8px);
+                -webkit-backdrop-filter: blur(8px);
+            }
+            .animate-float {
+                animation: float 6s ease-in-out infinite;
+            }
+            .animate-pulse-slow {
+                animation: pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+            }
+            .grid-flow-dense-auto {
+                grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            }
+        }
+        
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+    </style>
+</head>
+<body class="font-inter bg-gradient-to-br from-gray-50 to-gray-100 text-dark min-h-screen">
+    <!-- 导航栏 -->
+    <header class="fixed w-full top-0 z-50 transition-all duration-300" id="navbar">
+        <div class="bg-white/80 bg-glass shadow-sm py-4 px-6 md:px-12">
+            <div class="container mx-auto flex justify-between items-center">
+                <div class="flex items-center space-x-2">
+                    <div class="w-10 h-10 rounded-lg bg-primary flex items-center justify-center">
+                        <span class="text-white font-bold text-xl">QC</span>
+                    </div>
+                    <h1 class="text-xl md:text-2xl font-bold text-dark">量子计算与信息处理实验室</h1>
+                </div>
+                
+                <nav class="hidden md:flex items-center space-x-8">
+                    <a href="#research" class="text-gray-600 hover:text-primary transition-colors duration-200 font-medium">研究方向</a>
+                    <a href="#publications" class="text-gray-600 hover:text-primary transition-colors duration-200 font-medium">论文著作</a>
+                    <a href="#software" class="text-gray-600 hover:text-primary transition-colors duration-200 font-medium">软件著作</a>
+                    <a href="#videos" class="text-gray-600 hover:text-primary transition-colors duration-200 font-medium">成果视频</a>
+                    <a href="#news" class="text-gray-600 hover:text-primary transition-colors duration-200 font-medium">近期动态</a>
+                </nav>
+                
+                <button class="md:hidden text-dark text-xl" id="mobile-menu-button">
+                    <i class="fa fa-bars"></i>
+                </button>
+            </div>
+        </div>
+        
+        <!-- 移动端菜单 -->
+        <div class="md:hidden hidden bg-white shadow-lg absolute w-full" id="mobile-menu">
+            <div class="container mx-auto py-4 px-6 flex flex-col space-y-4">
+                <a href="#research" class="text-gray-600 hover:text-primary transition-colors duration-200 font-medium py-2">研究方向</a>
+                <a href="#publications" class="text-gray-600 hover:text-primary transition-colors duration-200 font-medium py-2">论文著作</a>
+                <a href="#software" class="text-gray-600 hover:text-primary transition-colors duration-200 font-medium py-2">软件著作</a>
+                <a href="#videos" class="text-gray-600 hover:text-primary transition-colors duration-200 font-medium py-2">成果视频</a>
+                <a href="#news" class="text-gray-600 hover:text-primary transition-colors duration-200 font-medium py-2">近期动态</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="pt-24 pb-16">
+        <!-- 实验室介绍部分 -->
+        <section class="container mx-auto px-6 md:px-12 mb-16" id="research">
+            <div class="flex flex-col md:flex-row gap-12">
+                <div class="md:w-1/2 space-y-6">
+                    <h2 class="text-[clamp(2rem,5vw,3rem)] font-bold leading-tight text-gradient bg-gradient-to-r from-primary to-accent">量子计算与信息处理实验室</h2>
+                    
+                    <p class="text-lg text-gray-700 leading-relaxed">
+                        本实验室致力于量子计算、量子信息和量子通信领域的前沿研究，专注于开发新型量子算法、量子模拟技术以及量子密码学应用。实验室拥有国际一流的研究设备和一支由顶尖科学家组成的研究团队，致力于推动量子信息技术的发展与应用。
+                    </p>
+                    
+                    <div class="space-y-4">
+                        <div class="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300">
+                            <div class="flex items-center mb-4">
+                                <div class="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center mr-4">
+                                    <i class="fa fa-flask text-primary text-xl"></i>
+                                </div>
+                                <h3 class="text-xl font-semibold">量子算法设计</h3>
+                            </div>
+                            <p class="text-gray-600">
+                                研究和开发适用于量子计算机的新型算法，包括量子机器学习、量子优化和量子模拟算法，探索量子计算在各个领域的应用潜力。
+                            </p>
+                        </div>
+                        
+                        <div class="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300">
+                            <div class="flex items-center mb-4">
+                                <div class="w-12 h-12 rounded-lg bg-secondary/10 flex items-center justify-center mr-4">
+                                    <i class="fa fa-microchip text-secondary text-xl"></i>
+                                </div>
+                                <h3 class="text-xl font-semibold">量子硬件实现</h3>
+                            </div>
+                            <p class="text-gray-600">
+                                致力于量子比特的制备、操控和读取技术研究，开发新型量子处理器架构，推动量子计算硬件的发展和实用化。
+                            </p>
+                        </div>
+                        
+                        <div class="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300">
+                            <div class="flex items-center mb-4">
+                                <div class="w-12 h-12 rounded-lg bg-accent/10 flex items-center justify-center mr-4">
+                                    <i class="fa fa-shield text-accent text-xl"></i>
+                                </div>
+                                <h3 class="text-xl font-semibold">量子安全通信</h3>
+                            </div>
+                            <p class="text-gray-600">
+                                研究量子密码学理论与技术，开发基于量子力学原理的安全通信系统，为信息安全提供革命性的解决方案。
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="md:w-1/2 relative">
+                    <div class="relative z-10 bg-white rounded-2xl shadow-xl overflow-hidden">
+                        <div class="aspect-video bg-gradient-to-br from-primary/90 to-accent/90 flex items-center justify-center p-6">
+                            <img src="https://picsum.photos/seed/quantum/800/450" alt="量子计算实验室设备" class="rounded-lg shadow-lg max-w-full max-h-full object-contain">
+                        </div>
+                        <div class="p-6">
+                            <h3 class="text-xl font-semibold mb-2">实验室研究环境</h3>
+                            <p class="text-gray-600">
+                                实验室配备了先进的量子计算研究设备，包括低温量子处理器、高精度激光系统和量子通信终端等，为开展前沿量子科学研究提供了坚实的硬件基础。
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <!-- 装饰元素 -->
+                    <div class="absolute top-1/4 -right-6 w-24 h-24 bg-primary/20 rounded-full blur-2xl animate-pulse-slow"></div>
+                    <div class="absolute bottom-1/3 -left-8 w-32 h-32 bg-secondary/20 rounded-full blur-3xl animate-pulse-slow" style="animation-delay: 2s;"></div>
+                    
+                    <!-- 研究数据统计 -->
+                    <div class="grid grid-cols-2 gap-4 mt-8">
+                        <div class="bg-white p-4 rounded-lg shadow-md">
+                            <div class="text-3xl font-bold text-primary mb-1">25+</div>
+                            <div class="text-sm text-gray-600">研究人员</div>
+                        </div>
+                        <div class="bg-white p-4 rounded-lg shadow-md">
+                            <div class="text-3xl font-bold text-secondary mb-1">120+</div>
+                            <div class="text-sm text-gray-600">学术论文</div>
+                        </div>
+                        <div class="bg-white p-4 rounded-lg shadow-md">
+                            <div class="text-3xl font-bold text-accent mb-1">35</div>
+                            <div class="text-sm text-gray-600">科研项目</div>
+                        </div>
+                        <div class="bg-white p-4 rounded-lg shadow-md">
+                            <div class="text-3xl font-bold text-dark mb-1">18</div>
+                            <div class="text-sm text-gray-600">软件著作</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- 分隔线 -->
+        <div class="container mx-auto px-6 md:px-12 mb-16">
+            <div class="h-px bg-gradient-to-r from-transparent via-gray-300 to-transparent"></div>
+        </div>
+        
+        <!-- 成果展示区 -->
+        <section class="container mx-auto px-6 md:px-12">
+            <div class="text-center mb-12">
+                <h2 class="text-[clamp(1.5rem,3vw,2.5rem)] font-bold mb-4">研究成果展示</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto">
+                    浏览我们实验室在量子计算与信息处理领域的最新研究成果，包括学术论文、软件著作、研究视频等。
+                </p>
+            </div>
+            
+            <!-- 标签页导航 -->
+            <div class="flex flex-wrap justify-center gap-2 md:gap-4 mb-10" id="tabs">
+                <button class="tab-btn active px-6 py-3 rounded-full bg-primary text-white font-medium shadow-md hover:shadow-lg transition-all duration-200" data-target="publications-tab">
+                    <i class="fa fa-book mr-2"></i>论文著作
+                </button>
+                <button class="tab-btn px-6 py-3 rounded-full bg-gray-200 text-gray-700 font-medium shadow-sm hover:shadow-md transition-all duration-200" data-target="software-tab">
+                    <i class="fa fa-code mr-2"></i>软件著作
+                </button>
+                <button class="tab-btn px-6 py-3 rounded-full bg-gray-200 text-gray-700 font-medium shadow-sm hover:shadow-md transition-all duration-200" data-target="videos-tab">
+                    <i class="fa fa-play-circle mr-2"></i>成果视频
+                </button>
+                <button class="tab-btn px-6 py-3 rounded-full bg-gray-200 text-gray-700 font-medium shadow-sm hover:shadow-md transition-all duration-200" data-target="news-tab">
+                    <i class="fa fa-newspaper-o mr-2"></i>近期动态
+                </button>
+            </div>
+            
+            <!-- 标签页内容 -->
+            <div class="tab-content active" id="publications-tab">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1">
+                        <div class="p-6">
+                            <span class="inline-block px-3 py-1 bg-primary/10 text-primary text-sm rounded-full mb-4">量子算法</span>
+                            <h3 class="text-xl font-semibold mb-2">Efficient Quantum Algorithms for Machine Learning Optimization Problems</h3>
+                            <p class="text-gray-600 mb-4">
+                                本文提出了一种新型量子优化算法，能够显著提高机器学习中复杂优化问题的求解效率，为量子机器学习的实际应用提供了新途径。
+                            </p>
+                            <div class="flex items-center text-sm text-gray-500 mb-4">
+                                <span class="mr-4"><i class="fa fa-calendar mr-1"></i> 2025</span>
+                                <span class="mr-4"><i class="fa fa-book mr-1"></i> Nature Physics</span>
+                                <span><i class="fa fa-file-text-o mr-1"></i> DOI: 10.1038/s41567-025-01987-6</span>
+                            </div>
+                            <div class="flex flex-wrap gap-2">
+                                <span class="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded">张三</span>
+                                <span class="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded">李四</span>
+                                <span class="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded">王五</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1">
+                        <div class="p-6">
+                            <span class="inline-block px-3 py-1 bg-secondary/10 text-secondary text-sm rounded-full mb-4">量子通信</span>
+                            <h3 class="text-xl font-semibold mb-2">Long-Distance Quantum Key Distribution with Satellite Relays</h3>
+                            <p class="text-gray-600 mb-4">
+                                本研究提出了一种基于卫星中继的长距离量子密钥分发方案，有效解决了地面量子通信距离限制问题，为构建全球化量子通信网络奠定了基础。
+                            </p>
+                            <div class="flex items-center text-sm text-gray-500 mb-4">
+                                <span class="mr-4"><i class="fa fa-calendar mr-1"></i> 2024</span>
+                                <span class="mr-4"><i class="fa fa-book mr-1"></i> Science</span>
+                                <span><i class="fa fa-file-text-o mr-1"></i> DOI: 10.1126/science.abi9876</span>
+                            </div>
+                            <div class="flex flex-wrap gap-2">
+                                <span class="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded">赵六</span>
+                                <span class="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded">钱七</span>
+                                <span class="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded">孙八</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1">
+                        <div class="p-6">
+                            <span class="inline-block px-3 py-1 bg-accent/10 text-accent text-sm rounded-full mb-4">量子模拟</span>
+                            <h3 class="text-xl font-semibold mb-2">Quantum Simulation of Complex Molecular Systems with Error Mitigation Techniques</h3>
+                            <p class="text-gray-600 mb-4">
+                                本文提出了一种结合量子计算与误差缓解技术的复杂分子系统模拟方法，能够有效提高量子模拟的精度和可靠性，为新药研发和材料科学提供了强大工具。
+                            </p>
+                            <div class="flex items-center text-sm text-gray-500 mb-4">
+                                <span class="mr-4"><i class="fa fa-calendar mr-1"></i> 2025</span>
+                                <span class="mr-4"><i class="fa fa-book mr-1"></i> Physical Review Letters</span>
+                                <span><i class="fa fa-file-text-o mr-1"></i> DOI: 10.1103/PhysRevLett.134.050501</span>
+                            </div>
+                            <div class="flex flex-wrap gap-2">
+                                <span class="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded">周九</span>
+                                <span class="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded">吴十</span>
+                                <span class="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded">郑十一</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1">
+                        <div class="p-6">
+                            <span class="inline-block px-3 py-1 bg-primary/10 text-primary text-sm rounded-full mb-4">量子硬件</span>
+                            <h3 class="text-xl font-semibold mb-2">High-Fidelity Quantum Gates for Superconducting Qubits</h3>
+                            <p class="text-gray-600 mb-4">
+                                本研究开发了一种新型超导量子比特高保真度量子门实现方法，显著提高了量子操作的精度和稳定性，为构建可扩展量子计算机提供了关键技术支持。
+                            </p>
+                            <div class="flex items-center text-sm text-gray-500 mb-4">
+                                <span class="mr-4"><i class="fa fa-calendar mr-1"></i> 2024</span>
+                                <span class="mr-4"><i class="fa fa-book mr-1"></i> Physical Review X</span>
+                                <span><i class="fa fa-file-text-o mr-1"></i> DOI: 10.1103/PhysRevX.14.021024</span>
+                            </div>
+                            <div class="flex flex-wrap gap-2">
+                                <span class="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded">王十二</span>
+                                <span class="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded">陈十三</span>
+                                <span class="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded">李十四</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="text-center mt-10">
+                    <button class="px-6 py-3 bg-primary text-white rounded-lg shadow-md hover:bg-primary/90 transition-colors duration-200 flex items-center mx-auto">
+                        <span>查看更多论文</span>
+                        <i class="fa fa-arrow-right ml-2"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="tab-content hidden" id="software-tab">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-all duration-300">
+                        <div class="aspect-video bg-gray-100 flex items-center justify-center">
+                            <i class="fa fa-code text-5xl text-primary/30"></i>
+                        </div>
+                        <div class="p-6">
+                            <h3 class="text-xl font-semibold mb-2">QuantumSim v2.0</h3>
+                            <p class="text-gray-600 mb-4">
+                                基于Python的量子计算模拟器，支持多种量子算法的模拟和优化，提供友好的API接口和可视化工具。
+                            </p>
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm text-gray-500"><i class="fa fa-calendar mr-1"></i> 2025-03-15</span>
+                                <span class="px-3 py-1 bg-primary/10 text-primary text-sm rounded-full">软著登字第1234567号</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-all duration-300">
+                        <div class="aspect-video bg-gray-100 flex items-center justify-center">
+                            <i class="fa fa-shield text-5xl text-secondary/30"></i>
+                        </div>
+                        <div class="p-6">
+                            <h3 class="text-xl font-semibold mb-2">QKDNetwork v1.5</h3>
+                            <p class="text-gray-600 mb-4">
+                                量子密钥分发网络管理系统，支持量子密钥的生成、分发、存储和应用，提供安全可靠的量子通信解决方案。
+                            </p>
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm text-gray-500"><i class="fa fa-calendar mr-1"></i> 2024-11-22</span>
+                                <span class="px-3 py-1 bg-secondary/10 text-secondary text-sm rounded-full">软著登字第1234568号</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-all duration-300">
+                        <div class="aspect-video bg-gray-100 flex items-center justify-center">
+                            <i class="fa fa-flask text-5xl text-accent/30"></i>
+                        </div>
+                        <div class="p-6">
+                            <h3 class="text-xl font-semibold mb-2">QMLToolkit v1.0</h3>
+                            <p class="text-gray-600 mb-4">
+                                量子机器学习工具包，集成了多种量子机器学习算法和模型，支持与经典机器学习框架的无缝对接。
+                            </p>
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm text-gray-500"><i class="fa fa-calendar mr-1"></i> 2025-01-08</span>
+                                <span class="px-3 py-1 bg-accent/10 text-accent text-sm rounded-full">软著登字第1234569号</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="text-center mt-10">
+                    <button class="px-6 py-3 bg-primary text-white rounded-lg shadow-md hover:bg-primary/90 transition-colors duration-200 flex items-center mx-auto">
+                        <span>查看更多软件著作</span>
+                        <i class="fa fa-arrow-right ml-2"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="tab-content hidden" id="videos-tab">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-all duration-300">
+                        <div class="aspect-video bg-gray-900 relative">
+                            <img src="https://picsum.photos/seed/quantum1/800/450" alt="量子计算原理介绍视频缩略图" class="w-full h-full object-cover">
+                            <div class="absolute inset-0 bg-black/40 flex items-center justify-center">
+                                <div class="w-16 h-16 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center">
+                                    <i class="fa fa-play text-white text-2xl"></i>
+                                </div>
+                            </div>
+                            <div class="absolute bottom-3 right-3 bg-black/70 text-white text-xs px-2 py-1 rounded">
+                                15:32
+                            </div>
+                        </div>
+                        <div class="p-6">
+                            <h3 class="text-xl font-semibold mb-2">量子计算原理与应用前景</h3>
+                            <p class="text-gray-600 mb-4">
+                                本视频详细介绍了量子计算的基本原理、关键技术和应用前景，适合对量子计算感兴趣的科研人员和学生观看。
+                            </p>
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm text-gray-500"><i class="fa fa-calendar mr-1"></i> 2025-02-18</span>
+                                <div class="flex items-center text-sm text-gray-500">
+                                    <i class="fa fa-eye mr-1"></i> 2.3k
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-all duration-300">
+                        <div class="aspect-video bg-gray-900 relative">
+                            <img src="https://picsum.photos/seed/quantum2/800/450" alt="实验室最新量子处理器展示视频缩略图" class="w-full h-full object-cover">
+                            <div class="absolute inset-0 bg-black/40 flex items-center justify-center">
+                                <div class="w-16 h-16 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center">
+                                    <i class="fa fa-play text-white text-2xl"></i>
+                                </div>
+                            </div>
+                            <div class="absolute bottom-3 right-3 bg-black/70 text-white text-xs px-2 py-1 rounded">
+                                22:15
+                            </div>
+                        </div>
+                        <div class="p-6">
+                            <h3 class="text-xl font-semibold mb-2">实验室最新量子处理器展示</h3>
+                            <p class="text-gray-600 mb-4">
+                                本视频展示了实验室最新研发的24比特超导量子处理器的设计原理、制造工艺和性能测试结果。
+                            </p>
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm text-gray-500"><i class="fa fa-calendar mr-1"></i> 2025-05-03</span>
+                                <div class="flex items-center text-sm text-gray-500">
+                                    <i class="fa fa-eye mr-1"></i> 3.7k
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="text-center mt-10">
+                    <button class="px-6 py-3 bg-primary text-white rounded-lg shadow-md hover:bg-primary/90 transition-colors duration-200 flex items-center mx-auto">
+                        <span>查看更多视频</span>
+                        <i class="fa fa-arrow-right ml-2"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="tab-content hidden" id="news-tab">
+                <div class="space-y-6">
+                    <div class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-all duration-300">
+                        <div class="p-6 md:p-8">
+                            <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-4">
+                                <h3 class="text-xl font-semibold mb-2 md:mb-0">实验室成功研发32比特量子处理器</h3>
+                                <span class="text-sm text-gray-500"><i class="fa fa-calendar mr-1"></i> 2025-06-15</span>
+                            </div>
+                            <p class="text-gray-600 mb-4">
+                                近日，本实验室成功研发出具有32个量子比特的超导量子处理器，创造了国内量子计算领域的新纪录。该处理器采用了新型的量子比特设计和连接方案，显著提高了量子门操作的保真度和量子状态的保持时间。这一成果标志着我国在量子计算核心硬件领域取得了重要突破，为实现量子优势奠定了坚实基础。
+                            </p>
+                            <div class="flex flex-wrap gap-2 mb-4">
+                                <span class="px-2 py-1 bg-primary/10 text-primary text-xs rounded">科研进展</span>
+                                <span class="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded">量子硬件</span>
+                            </div>
+                            <a href="#" class="inline-flex items-center text-primary font-medium hover:underline">
+                                阅读详情 <i class="fa fa-long-arrow-right ml-2"></i>
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-all duration-300">
+                        <div class="p-6 md:p-8">
+                            <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-4">
+                                <h3 class="text-xl font-semibold mb-2 md:mb-0">实验室团队在《Nature》发表重要研究成果</h3>
+                                <span class="text-sm text-gray-500"><i class="fa fa-calendar mr-1"></i> 2025-04-28</span>
+                            </div>
+                            <p class="text-gray-600 mb-4">
+                                本实验室研究团队在量子计算领域取得重要突破，相关研究成果以"Efficient Quantum Error Correction for Fault-Tolerant Quantum Computing"为题发表在国际顶级期刊《Nature》上。该研究提出了一种新型量子纠错方案，能够有效提高量子计算的可靠性和稳定性，为实现实用化量子计算机提供了关键理论支持。
+                            </p>
+                            <div class="flex flex-wrap gap-2 mb-4">
+                                <span class="px-2 py-1 bg-secondary/10 text-secondary text-xs rounded">学术论文</span>
+                                <span class="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded">量子纠错</span>
+                            </div>
+                            <a href="#" class="inline-flex items-center text-primary font-medium hover:underline">
+                                阅读详情 <i class="fa fa-long-arrow-right ml-2"></i>
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-all duration-300">
+                        <div class="p-6 md:p-8">
+                            <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-4">
+                                <h3 class="text-xl font-semibold mb-2 md:mb-0">实验室与国内多家企业建立合作关系</h3>
+                                <span class="text-sm text-gray-500"><i class="fa fa-calendar mr-1"></i> 2025-03-10</span>
+                            </div>
+                            <p class="text-gray-600 mb-4">
+                                为推动量子计算技术的产业化应用，本实验室近日与国内多家科技企业签署合作协议，共同开展量子计算在金融、医药、材料科学等领域的应用研究。合作将充分发挥实验室在量子计算领域的技术优势和企业在行业应用方面的经验，加速量子计算技术的落地和推广。
+                            </p>
+                            <div class="flex flex-wrap gap-2 mb-4">
+                                <span class="px-2 py-1 bg-accent/10 text-accent text-xs rounded">合作动态</span>
+                                <span class="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded">产业化</span>
+                            </div>
+                            <a href="#" class="inline-flex items-center text-primary font-medium hover:underline">
+                                阅读详情 <i class="fa fa-long-arrow-right ml-2"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="text-center mt-10">
+                    <button class="px-6 py-3 bg-primary text-white rounded-lg shadow-md hover:bg-primary/90 transition-colors duration-200 flex items-center mx-auto">
+                        <span>查看更多动态</span>
+                        <i class="fa fa-arrow-right ml-2"></i>
+                    </button>
+                </div>
+            </div>
+        </section>
+    </main>
+    
+    <footer class="bg-dark text-white py-12">
+        <div class="container mx-auto px-6 md:px-12">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <div class="flex items-center space-x-2 mb-6">
+                        <div class="w-10 h-10 rounded-lg bg-white flex items-center justify-center">
+                            <span class="text-primary font-bold text-xl">QC</span>
+                        </div>
+                        <h2 class="text-xl font-bold">量子计算与信息处理实验室</h2>
+                    </div>
+                    <p class="text-gray-400 mb-6">
+                        致力于量子计算、量子信息和量子通信领域的前沿研究，推动量子信息技术的发展与应用。
+                    </p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors duration-200">
+                            <i class="fa fa-weixin text-xl"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors duration-200">
+                            <i class="fa fa-weibo text-xl"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors duration-200">
+                            <i class="fa fa-github text-xl"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors duration-200">
+                            <i class="fa fa-envelope text-xl"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">快速链接</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#research" class="text-gray-400 hover:text-white transition-colors duration-200">研究方向</a></li>
+                        <li><a href="#publications-tab" class="text-gray-400 hover:text-white transition-colors duration-200">论文著作</a></li>
+                        <li><a href="#software-tab" class="text-gray-400 hover:text-white transition-colors duration-200">软件著作</a></li>
+                        <li><a href="#videos-tab" class="text-gray-400 hover:text-white transition-colors duration-200">成果视频</a></li>
+                        <li><a href="#news-tab" class="text-gray-400 hover:text-white transition-colors duration-200">近期动态</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">联系方式</h3>
+                    <ul class="space-y-2">
+                        <li class="flex items-start">
+                            <i class="fa fa-map-marker text-gray-400 mt-1 mr-3"></i>
+                            <span class="text-gray-400">北京市海淀区中关村南大街5号</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fa fa-phone text-gray-400 mr-3"></i>
+                            <span class="text-gray-400">010-12345678</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fa fa-envelope text-gray-400 mr-3"></i>
+                            <span class="text-gray-400">contact@qclab.edu.cn</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">订阅最新动态</h3>
+                    <p class="text-gray-400 mb-4">
+                        订阅我们的邮件，获取实验室最新研究成果和活动信息。
+                    </p>
+                    <form class="flex">
+                        <input type="email" placeholder="您的邮箱地址" class="px-4 py-2 rounded-l-lg w-full focus:outline-none text-dark">
+                        <button type="submit" class="bg-primary px-4 py-2 rounded-r-lg hover:bg-primary/90 transition-colors duration-200">
+                            <i class="fa fa-paper-plane"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-800 mt-12 pt-8 text-center text-gray-500 text-sm">
+                <p>© 2025 量子计算与信息处理实验室. 保留所有权利.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // 导航栏滚动效果
+        const navbar = document.getElementById('navbar');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                navbar.classList.add('bg-white', 'shadow-md');
+                navbar.classList.remove('bg-transparent');
+            } else {
+                navbar.classList.remove('bg-white', 'shadow-md');
+            }
+        });
+        
+        // 移动端菜单
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+        
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+        
+        // 标签页切换
+        const tabButtons = document.querySelectorAll('.tab-btn');
+        const tabContents = document.querySelectorAll('.tab-content');
+        
+        tabButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                // 移除所有按钮的活动状态
+                tabButtons.forEach(btn => {
+                    btn.classList.remove('active', 'bg-primary', 'text-white', 'shadow-md');
+                    btn.classList.add('bg-gray-200', 'text-gray-700', 'shadow-sm');
+                });
+                
+                // 添加当前按钮的活动状态
+                button.classList.add('active', 'bg-primary', 'text-white', 'shadow-md');
+                button.classList.remove('bg-gray-200', 'text-gray-700', 'shadow-sm');
+                
+                // 隐藏所有内容
+                tabContents.forEach(content => {
+                    content.classList.add('hidden');
+                    content.classList.remove('active');
+                });
+                
+                // 显示当前内容
+                const targetId = button.getAttribute('data-target');
+                const targetContent = document.getElementById(targetId);
+                targetContent.classList.remove('hidden');
+                targetContent.classList.add('active');
+            });
+        });
+        
+        // 平滑滚动
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+                
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                    
+                    // 如果是在移动设备上，点击导航链接后关闭菜单
+                    if (window.innerWidth < 768) {
+                        mobileMenu.classList.add('hidden');
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
+    
